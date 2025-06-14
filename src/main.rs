@@ -1,3 +1,10 @@
+mod day1;
+
 fn main() {
-    println!("Hello, world!");
+    match day1::part1() {
+        Ok(distance) => {
+            println!("Distance is {:?}", distance);
+        }
+        Err(e) => println!("Failed with error {e}"),
+    }
 }

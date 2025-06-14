@@ -22,8 +22,8 @@ fn read_input() -> Result<(Vec<u32>, Vec<u32>), Box<dyn Error>> {
         let mut values = line.split_whitespace();
 
         if let (Some(x), Some(y)) = (values.next(), values.next()) {
-            first.push(x.parse().unwrap());
-            second.push(y.parse().unwrap());
+            first.push(x.parse()?);
+            second.push(y.parse()?);
         }
     }
     Ok((first, second))

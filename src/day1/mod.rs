@@ -1,11 +1,30 @@
+use std::collections::HashMap;
 use std::error::Error;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-pub fn part1() -> Result<u32, Box<dyn Error>> {
-    let (first, second) = read_input()?;
+pub fn exercise() -> Result<(u32, u32), Box<dyn std::error::Error>> {
+    let (mut first, mut second) = read_input()?;
+    let distance = part1(&mut first, &mut second)?;
+    let similarity = part2(&mut first, &mut second);
+    Ok((distance, similarity))
+}
+
+fn part1(first: &mut Vec<u32>, second: &mut Vec<u32>) -> Result<u32, Box<dyn Error>> {
     let distance = get_distance(first, second);
     Ok(distance)
+}
+
+pub fn part2(first: &mut Vec<u32>, second: &mut Vec<u32>) -> u32 {
+    let mut freq = HashMap::new();
+    for num in second.iter() {
+        *freq.entry(num).or_insert(0) += 1;
+    }
+    let similarity = first
+        .iter()
+        .map(|&num| num * freq.get(&num).copied().unwrap_or(0))
+        .sum();
+    similarity
 }
 
 fn read_input() -> Result<(Vec<u32>, Vec<u32>), Box<dyn Error>> {
@@ -29,7 +48,7 @@ fn read_input() -> Result<(Vec<u32>, Vec<u32>), Box<dyn Error>> {
     Ok((first, second))
 }
 
-fn get_distance(mut first: Vec<u32>, mut second: Vec<u32>) -> u32 {
+fn get_distance(first: &mut Vec<u32>, second: &mut Vec<u32>) -> u32 {
     first.sort();
     second.sort();
 

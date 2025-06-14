@@ -6,7 +6,7 @@ use std::io::{BufRead, BufReader};
 pub fn exercise() -> Result<(u32, u32), Box<dyn std::error::Error>> {
     let (mut first, mut second) = read_input()?;
     let distance = part1(&mut first, &mut second)?;
-    let similarity = part2(&mut first, &mut second);
+    let similarity = part2(&first, &second);
     Ok((distance, similarity))
 }
 
@@ -15,7 +15,7 @@ fn part1(first: &mut Vec<u32>, second: &mut Vec<u32>) -> Result<u32, Box<dyn Err
     Ok(distance)
 }
 
-pub fn part2(first: &mut Vec<u32>, second: &mut Vec<u32>) -> u32 {
+pub fn part2(first: &[u32], second: &[u32]) -> u32 {
     let mut freq = HashMap::new();
     for num in second.iter() {
         *freq.entry(num).or_insert(0) += 1;

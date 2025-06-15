@@ -1,7 +1,7 @@
+use advent_of_code_2024::read_from_file;
 use std::collections::HashMap;
 use std::error::Error;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::BufRead;
 
 pub fn exercise() {
     match run_both_parts() {
@@ -41,10 +41,7 @@ fn read_input() -> Result<(Vec<u32>, Vec<u32>), Box<dyn Error>> {
     let mut first: Vec<u32> = Vec::new();
     let mut second: Vec<u32> = Vec::new();
 
-    let path: &'static str = "src/day1/input.txt";
-    let input: File =
-        File::open(path).map_err(|err| format!("Failed to open {}: {}", path, err))?;
-    let buffer: BufReader<File> = BufReader::new(input);
+    let buffer = read_from_file("src/day1/input.txt")?;
 
     for line in buffer.lines() {
         let line = line?;

@@ -3,7 +3,17 @@ use std::error::Error;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-pub fn exercise() -> Result<(u32, u32), Box<dyn std::error::Error>> {
+pub fn exercise() {
+    match run_both_parts() {
+        Ok((distance, similarity)) => {
+            println!("Distance is {:?}", distance);
+            println!("Similarity is {:?}", similarity);
+        }
+        Err(e) => println!("Failed with error {e}"),
+    }
+}
+
+fn run_both_parts() -> Result<(u32, u32), Box<dyn Error>> {
     let (mut first, mut second) = read_input()?;
     let distance = part1(&mut first, &mut second)?;
     let similarity = part2(&first, &second);

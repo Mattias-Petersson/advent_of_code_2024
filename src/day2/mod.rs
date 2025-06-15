@@ -3,34 +3,50 @@ use std::error::Error;
 use std::io::BufRead;
 
 pub fn exercise() {
-    match part1() {
-        Ok(count_safe) => {
-            println!("There are {:?} safe lines", count_safe)
+    match count_safe_levels() {
+        Ok(num_safe) => {
+            println!("There are {:?} safe lines", num_safe)
         }
         Err(e) => {
-            println!("Error {e}")
+            eprintln!("Error {e}")
         }
     }
 }
 
-fn part1() -> Result<i32, Box<dyn Error>> {
+fn count_safe_levels() -> Result<i32, Box<dyn Error>> {
     let buffer = read_from_file("src/day2/input.txt")?;
-    let mut count_safe = 0;
+    let mut num_safe = 0;
     for line in buffer.lines() {
         let line = line?;
         let values = line
             .split_whitespace()
             .map(|i| i.parse::<i32>())
             .collect::<Result<_, _>>()?;
-        count_safe += is_safe(&values) as i32;
+        num_safe += is_safe_with_pb(&values) as i32;
     }
-    Ok(count_safe)
+    Ok(num_safe)
+}
+
+fn is_safe_with_pb(list: &Vec<i32>) -> bool {
+    match is_safe(&list) {
+        true => true,
+        false => {
+            for i in 0..list.len() {
+                let temp: Vec<i32> = list[..i].iter().chain(&list[i + 1..]).copied().collect();
+                if is_safe(&temp) {
+                    return true;
+                }
+            }
+            false
+        }
+    }
 }
 
 enum Direction {
     Increase,
     Decrease,
 }
+
 fn is_safe(list: &Vec<i32>) -> bool {
     if list.len() < 2 {
         return true;
@@ -48,16 +64,9 @@ fn is_safe(list: &Vec<i32>) -> bool {
             return false;
         }
         match direction {
-            Direction::Increase => {
-                if difference < 0 {
-                    return false;
-                }
-            }
-            Direction::Decrease => {
-                if difference > 0 {
-                    return false;
-                }
-            }
+            Direction::Increase if difference < 0 => return false,
+            Direction::Decrease if difference > 0 => return false,
+            _ => {}
         }
     }
     true

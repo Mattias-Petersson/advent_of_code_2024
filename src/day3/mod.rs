@@ -20,7 +20,7 @@ pub fn exercise() {
 fn handle_instructions(input: &str) -> Result<String, Box<dyn Error>> {
     let re: Regex = Regex::new(r"(do\(\)|don't\(\))")?;
     let str_parts: Vec<_> = re.split(input).collect();
-    let instructions: Vec<_> = re.find_iter(input).map(|m| m.as_str()).collect();
+    let instructions = re.find_iter(input).map(|m| m.as_str());
 
     // str_parts is 64 long, instructions is 63. In the assignment it is said that it starts in an enabled state.
     let mut result = String::from(str_parts[0]);

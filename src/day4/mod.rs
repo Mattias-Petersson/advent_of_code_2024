@@ -6,14 +6,18 @@ use std::{
 
 use advent_of_code_2024::read_from_file;
 
+const _MATCH_PHRASES: [[char; 4]; 2] = [['X', 'M', 'A', 'S'], ['S', 'A', 'M', 'X']];
+
 pub fn exercise() {
-    let result = || -> Result<i32, Box<dyn Error>> {
+    let result = || -> Result<usize, Box<dyn Error>> {
         let _input = get_input()?;
-        println!("{:?}", _input);
-        Ok(read_vertical(&_input)? + read_horizontal(&_input)? + read_diagonal(&_input)?)
+        let hori = read_horizontal(&_input);
+        println!("{hori}");
+        let vert = read_vertical(&_input);
+        Ok(hori + vert)
     };
     match result() {
-        Ok(val) => println!("{val}"),
+        Ok(val) => println!("Occurrences of \"XMAS\" & \"SAMX\" in input: {val}"),
         Err(_) => todo!(),
     }
 }
@@ -27,19 +31,30 @@ fn get_input() -> Result<Vec<Vec<char>>, Box<dyn Error>> {
         .collect()
 }
 
-fn count_line(line: Vec<char>) {
-    const _MATCH_PHRASE: [char; 4] = ['X', 'M', 'A', 'S'];
-    const _MATCH_PHRASE_REV: [char; 4] = ['S', 'A', 'M', 'X'];
+fn count_matches(input: &Vec<Vec<char>>) -> usize {
+    input
+        .iter()
+        .flat_map(|row| row.windows(4))
+        .filter(|window| {
+            _MATCH_PHRASES
+                .iter()
+                .any(|match_pattern| match_pattern == window)
+        })
+        .count()
 }
 
-fn read_vertical(input: &Vec<Vec<char>>) -> Result<i32, Box<dyn Error>> {
-    todo!();
+fn read_horizontal(input: &Vec<Vec<char>>) -> usize {
+    count_matches(&input)
 }
 
-fn read_horizontal(input: &Vec<Vec<char>>) -> Result<i32, Box<dyn Error>> {
-    todo!();
+fn read_vertical(input: &Vec<Vec<char>>) -> usize {
+    let col_len = input[0].len();
+    let transposed = (0..col_len)
+        .map(|col| input.iter().map(|row| row[col]).collect::<Vec<_>>())
+        .collect::<Vec<_>>();
+    count_matches(&transposed)
 }
 
-fn read_diagonal(input: &Vec<Vec<char>>) -> Result<i32, Box<dyn Error>> {
+fn read_diagonal(input: &Vec<Vec<char>>) -> usize {
     todo!();
 }

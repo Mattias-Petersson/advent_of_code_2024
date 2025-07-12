@@ -90,48 +90,46 @@ mod tests {
 
     use super::*;
 
+    ///
+    /// Test to verify that the input which was given by the problem will match a known output.
     #[test]
     fn test_day5_part1() {
         let res = || -> Result<u32, Box<dyn Error>> {
-            let str = "47|53
-            97|13
-            97|61
-            97|47
-            75|29
-            61|13
-            75|53
-            29|13
-            97|29
-            53|29
-            61|53
-            97|53
-            61|29
-            47|13
-            75|47
-            97|75
-            47|61
-            75|61
-            47|29
-            75|13
-            53|13
+            let str = "\
+47|53
+97|13
+97|61
+97|47
+75|29
+61|13
+75|53
+29|13
+97|29
+53|29
+61|53
+97|53
+61|29
+47|13
+75|47
+97|75
+47|61
+75|61
+47|29
+75|13
+53|13
 
-            75,47,61,53,29
-            97,61,53,29,13
-            75,29,13
-            75,97,47,61,53
-            61,13,29
-            97,13,75,29,47";
+75,47,61,53,29
+97,61,53,29,13
+75,29,13
+75,97,47,61,53
+61,13,29
+97,13,75,29,47";
             let buffer = Cursor::new(str);
             let input = get_input(buffer)?;
-            println!("Rules: {:?} Pages: {:?}", input.0, input.1);
             let vectors = find_all_valid_books(&input)?;
             let n = calculate_from_valid(vectors);
-            println!("{:?}", n);
             Ok(n)
         };
-        match res() {
-            Ok(n) => println!("{n}"),
-            Err(e) => eprintln!("{e}"),
-        }
+        assert!(res().is_ok_and(|x| x == 143));
     }
 }

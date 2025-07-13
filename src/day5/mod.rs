@@ -1,4 +1,4 @@
-use std::{error::Error, io::BufRead};
+use std::{borrow::Cow, error::Error, io::BufRead};
 
 use advent_of_code_2024::read_from_file;
 
@@ -61,18 +61,17 @@ fn sum_of_rearranged_median(input: &(Rules, Pages)) -> u32 {
 }
 
 fn check_valid_page(page: &Vec<u32>, rules: &Rules) -> Option<Vec<u32>> {
-    let mut current_page = page.clone();
-    let mut is_changed = false;
+    let mut cow_page = Cow::from(page);
+
     loop {
         let mut is_valid = true;
         for rule in rules {
             if let (Some(first), Some(second)) = (
-                current_page.iter().position(|v| v == &rule.0),
-                current_page.iter().position(|v| v == &rule.1),
+                cow_page.iter().position(|v| v == &rule.0),
+                cow_page.iter().position(|v| v == &rule.1),
             ) {
                 if first > second {
-                    current_page.swap(first, second);
-                    is_changed = true;
+                    cow_page.to_mut().swap(first, second);
                     is_valid = false;
                 }
             }
@@ -81,10 +80,10 @@ fn check_valid_page(page: &Vec<u32>, rules: &Rules) -> Option<Vec<u32>> {
             break;
         }
     }
-    if is_changed {
-        return Some(current_page);
+    match cow_page {
+        Cow::Borrowed(_) => None,
+        Cow::Owned(vec) => Some(vec),
     }
-    None
 }
 
 fn calc_sum_median(book: &Vec<Vec<u32>>) -> u32 {

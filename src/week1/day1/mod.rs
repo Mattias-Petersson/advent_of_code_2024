@@ -41,7 +41,7 @@ fn read_input() -> Result<(Vec<u32>, Vec<u32>), Box<dyn Error>> {
     let mut first: Vec<u32> = Vec::new();
     let mut second: Vec<u32> = Vec::new();
 
-    let buffer = read_from_file("src/day1/input.txt")?;
+    let buffer = read_from_file("src/week1/day1/input.txt")?;
 
     for line in buffer.lines() {
         let line = line?;

@@ -14,7 +14,7 @@ pub fn exercise() {
 }
 
 fn count_safe_levels() -> Result<i32, Box<dyn Error>> {
-    let buffer = read_from_file("src/day2/input.txt")?;
+    let buffer = read_from_file("src/week1/day2/input.txt")?;
     let mut num_safe = 0;
     for line in buffer.lines() {
         let line = line?;

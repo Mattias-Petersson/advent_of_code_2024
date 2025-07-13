@@ -5,7 +5,7 @@ use std::io::Read;
 
 pub fn exercise() {
     let result = || -> Result<i32, Box<dyn Error>> {
-        let mut buffer = read_from_file("src/day3/input.txt")?;
+        let mut buffer = read_from_file("src/week1/day3/input.txt")?;
         let mut buff_to_str = String::new();
         buffer.read_to_string(&mut buff_to_str)?;
         let filtered_input = handle_instructions(&buff_to_str)?;

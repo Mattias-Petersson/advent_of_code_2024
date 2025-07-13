@@ -7,7 +7,7 @@ type Pages = Vec<Vec<u32>>;
 
 pub fn exercise() {
     let res = || -> Result<u32, Box<dyn Error>> {
-        let buffer = read_from_file("src/day5/input.txt")?;
+        let buffer = read_from_file("src/week1/day5/input.txt")?;
         let input = get_input(buffer)?;
         let n = sum_of_rearranged_median(&input);
         Ok(n)

@@ -24,7 +24,7 @@ pub fn exercise() {
 
 /// Reads in the input and returns a Vec<Vec<char>>
 fn get_input() -> Result<Vec<Vec<char>>, Box<dyn Error>> {
-    let buffer: BufReader<File> = read_from_file("src/day4/input.txt")?;
+    let buffer: BufReader<File> = read_from_file("src/week1/day4/input.txt")?;
     buffer
         .lines()
         .map(|line| Ok(line?.chars().collect()))

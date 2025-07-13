@@ -1,4 +1,4 @@
-use std::{error::Error, io::BufRead};
+use std::{borrow::Cow, error::Error, io::BufRead};
 
 use advent_of_code_2024::read_from_file;
 
@@ -9,9 +9,7 @@ pub fn exercise() {
     let res = || -> Result<u32, Box<dyn Error>> {
         let buffer = read_from_file("src/day5/input.txt")?;
         let input = get_input(buffer)?;
-        let vectors = find_all_valid_books(&input)?;
-        let n = calculate_from_valid(vectors);
-        println!("{n}");
+        let n = sum_of_rearranged_median(&input);
         Ok(n)
     };
     match res() {
@@ -50,32 +48,45 @@ fn get_input<R: BufRead>(buffer: R) -> Result<(Rules, Pages), Box<dyn Error>> {
     Ok((rules, pages))
 }
 
-fn find_all_valid_books(input: &(Rules, Pages)) -> Result<Vec<&Vec<u32>>, Box<dyn Error>> {
+fn sum_of_rearranged_median(input: &(Rules, Pages)) -> u32 {
     let (rules, pages) = input;
     let mut valid_pages = Vec::new();
 
     for vec in pages {
+        if let Some(reordered) = check_valid_page(&vec, rules) {
+            valid_pages.push(reordered);
+        }
+    }
+    calc_sum_median(&valid_pages)
+}
+
+fn check_valid_page(page: &Vec<u32>, rules: &Rules) -> Option<Vec<u32>> {
+    let mut cow_page = Cow::from(page);
+
+    loop {
         let mut is_valid = true;
         for rule in rules {
             if let (Some(first), Some(second)) = (
-                vec.iter().position(|v| v == &rule.0),
-                vec.iter().position(|v| v == &rule.1),
+                cow_page.iter().position(|v| v == &rule.0),
+                cow_page.iter().position(|v| v == &rule.1),
             ) {
                 if first > second {
+                    cow_page.to_mut().swap(first, second);
                     is_valid = false;
-                    break;
                 }
             }
         }
         if is_valid {
-            valid_pages.push(vec);
+            break;
         }
     }
-
-    Ok(valid_pages)
+    match cow_page {
+        Cow::Borrowed(_) => None,
+        Cow::Owned(vec) => Some(vec),
+    }
 }
 
-fn calculate_from_valid(book: Vec<&Vec<u32>>) -> u32 {
+fn calc_sum_median(book: &Vec<Vec<u32>>) -> u32 {
     book.iter()
         .map(|pages| {
             let middle = pages[(pages.len() - 1) / 2];
@@ -126,10 +137,12 @@ mod tests {
 97,13,75,29,47";
             let buffer = Cursor::new(str);
             let input = get_input(buffer)?;
-            let vectors = find_all_valid_books(&input)?;
-            let n = calculate_from_valid(vectors);
+            let n = sum_of_rearranged_median(&input);
             Ok(n)
         };
-        assert!(res().is_ok_and(|x| x == 143));
+        assert!(
+            res().is_ok_and(|x| x == 123),
+            "Output does not match the known answer."
+        );
     }
 }

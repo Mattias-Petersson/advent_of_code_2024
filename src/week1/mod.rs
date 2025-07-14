@@ -1,8 +1,9 @@
-pub mod day1;
-pub mod day2;
-pub mod day3;
-pub mod day4;
-pub mod day5;
+mod day1;
+mod day2;
+mod day3;
+mod day4;
+mod day5;
+mod day6;
 
 pub fn run_week() {
     day1::exercise();
@@ -10,4 +11,5 @@ pub fn run_week() {
     day3::exercise();
     day4::exercise();
     day5::exercise();
+    day6::exercise();
 }

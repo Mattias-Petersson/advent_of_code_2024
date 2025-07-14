@@ -1,16 +1,12 @@
-use std::{
-    error::Error,
-    fs::File,
-    io::{BufRead, BufReader},
-};
+use std::error::Error;
 
-use advent_of_code_2024::read_from_file;
+use advent_of_code_2024::get_input_to_char_array;
 
 const _MATCH_PHRASES: [[char; 4]; 2] = [['X', 'M', 'A', 'S'], ['S', 'A', 'M', 'X']];
 
 pub fn exercise() {
     let result = || -> Result<usize, Box<dyn Error>> {
-        let _input = get_input()?;
+        let _input = get_input_to_char_array("src/week1/day4/input.txt")?;
         let horizontal_count = read_horizontal(&_input);
         let vertical_count = read_vertical(&_input);
         let diagonal_count = read_diagonal(&_input);
@@ -20,15 +16,6 @@ pub fn exercise() {
         Ok(val) => println!("Occurrences of \"XMAS\" & \"SAMX\" in input: {val}"),
         Err(_) => todo!(),
     }
-}
-
-/// Reads in the input and returns a Vec<Vec<char>>
-fn get_input() -> Result<Vec<Vec<char>>, Box<dyn Error>> {
-    let buffer: BufReader<File> = read_from_file("src/week1/day4/input.txt")?;
-    buffer
-        .lines()
-        .map(|line| Ok(line?.chars().collect()))
-        .collect()
 }
 
 fn count_matches(input: &Vec<Vec<char>>) -> usize {

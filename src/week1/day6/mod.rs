@@ -5,7 +5,7 @@ use advent_of_code_2024::get_input_to_char_array;
 type Input = Vec<Vec<char>>;
 type Position = (usize, usize);
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 enum Direction {
     UP,
     DOWN,
@@ -54,6 +54,49 @@ fn find_start_position(input: &Input) -> Option<Position> {
     None
 }
 
+/// Used for part 2, iterates over all possible permutations, incredibly inefficient
+/// TODO: Improve this using some graph algorithm.
+#[allow(dead_code)]
+fn naive_approach(input: &Input, start_pos: Position, start_dir: Direction) -> usize {
+    let mut loop_count = 0;
+    let mut mutable_input = input.clone();
+
+    for row in 0..input.len() {
+        for col in 0..input[0].len() {
+            if input[row][col] == '#' || (row, col) == start_pos {
+                continue;
+            }
+            mutable_input[row][col] = '#';
+
+            let mut pos = start_pos;
+            let mut dir = start_dir;
+            let mut visited = HashSet::new();
+            let mut is_loop = false;
+
+            loop {
+                if visited.contains(&(pos, dir)) {
+                    is_loop = true;
+                    break;
+                }
+                visited.insert((pos, dir));
+
+                if let Some((new_pos, new_dir)) = can_move(&mutable_input, pos, dir) {
+                    pos = new_pos;
+                    dir = new_dir;
+                } else {
+                    break;
+                }
+            }
+
+            if is_loop {
+                loop_count += 1;
+            }
+            mutable_input[row][col] = '.';
+        }
+    }
+    loop_count
+}
+
 fn move_guard(input: &Input, pos: Position, dir: Direction) -> usize {
     let mut distinct: HashSet<Position> = HashSet::new();
     let mut pos = pos;
@@ -73,25 +116,22 @@ fn move_guard(input: &Input, pos: Position, dir: Direction) -> usize {
 
 fn can_move(input: &Input, pos: Position, dir: Direction) -> Option<(Position, Direction)> {
     let (row, col) = pos;
-    let (row_delta, col_delta) = dir.delta();
-    let new_row = row.checked_add_signed(row_delta)?;
-    let new_col = col.checked_add_signed(col_delta)?;
+    let mut current_dir = dir;
 
-    if new_row >= input.len() || new_col >= input[0].len() {
-        return None;
-    }
-
-    let new_pos = (new_row, new_col);
-    if input[new_row][new_col] != '#' {
-        return Some((new_pos, dir));
-    }
-
-    let mut new_dir = dir;
     for _ in 0..3 {
-        new_dir = new_dir.turn_right();
-        if let Some(new_pos) = can_move(input, pos, new_dir) {
-            return Some(new_pos);
+        let (row_delta, col_delta) = current_dir.delta();
+        let new_row = row.checked_add_signed(row_delta)?;
+        let new_col = col.checked_add_signed(col_delta)?;
+
+        if new_row >= input.len() || new_col >= input[0].len() {
+            return None;
         }
+
+        if input[new_row][new_col] != '#' {
+            return Some(((new_row, new_col), current_dir));
+        }
+
+        current_dir = current_dir.turn_right();
     }
     None
 }

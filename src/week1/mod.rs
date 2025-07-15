@@ -4,6 +4,7 @@ mod day3;
 mod day4;
 mod day5;
 mod day6;
+mod day7;
 
 pub fn run_week() {
     day1::exercise();
@@ -12,4 +13,5 @@ pub fn run_week() {
     day4::exercise();
     day5::exercise();
     day6::exercise();
+    day7::exercise();
 }

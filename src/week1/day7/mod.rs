@@ -10,19 +10,26 @@ impl Problem {
         self.try_operations(self.terms[0], 1)
     }
 
+    fn concatenate_terms(x: u64, y: u64) -> u64 {
+        format!("{}{}", x, y).parse().unwrap()
+    }
+
     fn try_operations(&self, current: u64, index: usize) -> bool {
         if index == self.terms.len() {
             return current == self.result;
         }
 
         let next = self.terms[index];
-        if self.try_operations(current + next, index + 1) {
+        let next_idx = index + 1;
+        if self.try_operations(current + next, next_idx) {
             return true;
         }
-        if self.try_operations(current * next, index + 1) {
+        if self.try_operations(current * next, next_idx) {
             return true;
         }
-
+        if self.try_operations(Self::concatenate_terms(current, next), next_idx) {
+            return true;
+        }
         false
     }
 }

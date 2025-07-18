@@ -6,6 +6,7 @@ mod day5;
 mod day6;
 mod day7;
 
+#[allow(unused)]
 pub fn run_week() {
     day1::exercise();
     day2::exercise();
